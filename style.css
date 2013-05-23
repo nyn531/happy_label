@@ -1,0 +1,19 @@
+h1 {text-align:center}
+
+h3 {text-align:center}
+
+div.wrapper {
+	background-color: white;
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+.canvas {
+	display: block;   
+	margin-left: auto;   
+	margin-right: auto; 
+}
+
+.center {
+	text-align:center
+}
