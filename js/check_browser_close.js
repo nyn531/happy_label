@@ -1,5 +1,5 @@
 var validNavigation = false;
- 
+
 function updatePlays() {
   var countRef = new Firebase('https://nyn531.firebaseIO.com/player_count');
   countRef.transaction(function(current_value) {

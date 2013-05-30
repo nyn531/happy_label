@@ -19,25 +19,38 @@
 </head> 
 
 <body>
-<div class="wrapper">
-<h1> Welcome to Happy Label </h1>
-<h3>There are <span id="player_count"></span> people playing.</h3>
-<h3>#matches: <span id="matches"></span><br>current choice: <span id="choice"></span><br>previous round: <span id="status"></span></h4>
 
-<div class="center">
-	<button class="btn btn-large btn-success" onclick="find_partner()"> Start a new game </button>
-</div>
-<br>
-<img id="candidate" class="canvas" src="data/cat.jpg" height="400" width="400">
-<h3>What is in the image?</h3>
-<br>
-<div class="wrapper">
-	<table>
-		<tr id="option_container">
-		</tr>
-	</table>
-</div>
-</div>
+<table>
+	<tr>
+		<td>
+			<h1> Welcome to Happy Label </h1>
+			<h3>There are <span id="player_count"></span> people playing.</h3>
+			<h3>Correct Matches: <span id="matches"></span><br>Time Left:&nbsp;<span id="timer"></span>&nbsp;sec</h3>
+
+			<div class="center">
+				<button class="btn btn-large btn-success" onclick="find_partner()"> Start a new game </button>
+				<!--<button class="btn btn-large btn-success" onclick="end_game()"> Quit game </button>-->
+			</div>
+			<br>
+			<br>
+		</td>
+		<td>
+			<h3><span id="status"></span><h3>
+		</td>
+	</tr>
+	<tr>
+		<td><img id="candidate" class="canvas" src="data/0.jpg" height="400" width="400"></td>
+		<td>
+			<h3>What is the object in the image? <br><span id="indicator">Please Select Your Choice:</span><span id="choice"></span></h3>
+			<div class="wrapper">
+				<table>
+					<td id="option_container">
+					</td>
+				</table>
+			</div>
+		</td>
+	</tr>
+<table>
 
 </body>
 

@@ -1,10 +1,13 @@
-var top_prefix = "tree";
-var image_num = 3;
+var top_prefix = "tree2/Vehicle";
+var image_num = 129;
+var secs = 200;
+//var timer_on = 0;
 var iambusy = 0;
 var my_id = 0; 
 var partner_id = 0;
 var game_id = 0;
 var image_id = 0;
+var myInterval = null;
 var playerRef = new Firebase('https://nyn531.firebaseIO.com/player');
 var playerIDRef = new Firebase('https://nyn531.firebaseIO.com/player_id');
 var playerCountRef = new Firebase('https://nyn531.firebaseIO.com/player_count');
@@ -58,7 +61,24 @@ $(document).ready(function() {
 
 // both sides call 
 function init() {
-	alert("Hey, Player "+ my_id +" Game Start!");
+	if (game_id == null) return;
+
+	start_timer();
+
+	gameRef.child(game_id).onDisconnect().remove();
+
+	alert("Hey, Player "+ my_id +"! Your are now playing with Player "+partner_id+". Game Start!");
+	/*
+		gameRef.child(game_id).child("timer").on('value', function(snapshot) {
+			if (snapshot.val() == 0) {
+				alert("Time is up! Thanks for playing!");
+				$("#timer").text("0"); 
+				end_game();
+			} else {
+				$("#timer").text(snapshot.val()); 
+			}
+		});
+	*/
 
 	gameRef.child(game_id).child('correct_count').on('value', function(snapshot) {
 		$("#matches").text(snapshot.val()); 
@@ -66,21 +86,65 @@ function init() {
 
 	//sync for wrong match, both sides call
 	gameRef.child(game_id).child('image_id').on('value', function(snapshot) {
-		//alert('mismatched!');
-		$("#status").text('mismatch, hurry up!'); 
+		$("#status").text('Mismatch'); 
 		gameRef.child(game_id).child("prefix").set(top_prefix);
 		image_id = snapshot.val();
 		set_image();
+ 		//alert("Mismatch! Your partner disagree with you.");
 		generate_options();
 	});
 
 	//sync for correct match, both sides call
 	gameRef.child(game_id).child("correct_count").on('value', function(snapshot) {
-		//alert('matched!');
-		$("#status").text('match, good job!'); 
+		$("#status").text('Match'); 
+		//alert("Match, Good Job!");
+		for(var i=0; i<10000; i++) {a=1;} //time delay
 		generate_options();
 	});
 
+	gameRef.on('child_removed', function(snapshot) {
+		if(snapshot.name() == game_id) {
+			end_game();
+		}
+	});
+}
+
+function end_game(){
+	alert("Game is over!");
+	var buttons = document.getElementsByClassName('btn btn-large btn-success');
+	buttons[0].disabled=false;
+	buttons[0].onclick = find_partner();
+	gameRef.child(game_id).remove();
+	playerRef.child(my_id).child('game_id').set(0);	
+	playerRef.child(my_id).child('partner_id').remove();	
+	$("#timer").text(0); 
+	window.clearInterval(myInterval);
+	top.window.location = "http://stanford.edu/~nayinan/cgi-bin/esp/#";
+}
+
+
+function start_timer() {
+	var buttons = document.getElementsByClassName('btn btn-large btn-success');
+	buttons[0].disabled=true;
+	$("#timer").text(secs.toString()); 
+	myInterval = setInterval(function(){
+		time = $("#timer").text(); 
+		time_int = parseInt(time, '10')-1;
+		if (time_int == 0) end_game();
+		$("#timer").text(time_int.toString()); 
+	},1000);
+//sync for correct match, both sides call
+/*
+	gameRef.child(game_id).child("timer").once('value', function(snapshot) {
+		if (snapshot.val()==secs) {
+			myInterval = setInterval(function(){
+				gameRef.child(game_id).child("timer").transaction(function(current_value) {
+				  return current_value - 1; 
+				});
+			},1000);
+		}
+	});
+*/
 }
 
 // find partner and game setup, single side call
@@ -103,10 +167,10 @@ function find_partner() {
 							gameRef.child(game_id).set('0');
 							gameRef.child(game_id).child("choice_num").set(0);
 							gameRef.child(game_id).child("correct_count").set(0);
+							//gameRef.child(game_id).child("timer").set(secs);
 							gameRef.child(game_id).child("prefix").set(top_prefix);
 							gameRef.child(game_id).child(my_id).set(0);
 							gameRef.child(game_id).child(partner_id).set(0);
-							gameRef.child(game_id).onDisconnect().remove();
 							playerRef.child(partner_id).set({game_id:game_id, partner_id:my_id}); //change player status 
 	   					playerRef.child(my_id).set({game_id:game_id, partner_id:partner_id});			//change player status 
 	   					image_id = gen_rand_image();
@@ -118,12 +182,13 @@ function find_partner() {
 	   		} 
   	});
   	if (partner_id==0) {
-			alert("Sorry, there is no player available. Pleas try again later!");
+			alert("Sorry, there is no player available. Please try again later!");
 		}
 	});
 } 
 
 function set_image() {
+	if (image_id==null) image_id =0;
 	$("#candidate").attr('src', image_prefix+image_id.toString()+image_affix);
 }
 
@@ -150,7 +215,7 @@ function generate_options() {
 			var container = $("#option_container");
 			container.empty();
 			for (i=0; i<all.length; i++) {
-				container.append('<td><a onclick="on_option_selected();" option='+all[i]+' class="btn btn-large btn-success" href="#">'+ all[i] + '</a></td>');
+				container.append('<tr><td><button id="btn'+i+'" onclick="on_option_selected();" option='+all[i]+' class="btn btn-large btn-success" href="#">'+ all[i] + '</button></td></tr>');
 			}
 		});
 	});
@@ -185,12 +250,16 @@ function on_option_selected() {
   		gameRef.child(game_id).child("choice_num").set(0);
   	}
 	});
+	var buttons = document.getElementsByClassName('btn btn-large btn-success');
+	for (i=1;i<buttons.length;i++) {
+		buttons[i].disabled = true;
+	}
 }
 
 function handle_mismatch() {
 	//generate a new image and upate image_id on server
 	image_id = gen_rand_image();
-	alert('new image!');
+	//alert('new image!');
 	gameRef.child(game_id).child("image_id").set(image_id);
 }
 
@@ -224,4 +293,3 @@ function update_score(new_prefix) {
 		return current_value + 1;
 	});
 }
-

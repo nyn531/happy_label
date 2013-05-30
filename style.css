@@ -2,18 +2,44 @@ h1 {text-align:center}
 
 h3 {text-align:center}
 
+table {
+	margin: 0 auto;  
+}
+
+#player_count {
+	text-align:center;
+	color:red;
+}
+
+#matches {
+	text-align:center;
+	color:red;
+}
+
+#status {
+	text-align:center;
+	color:red;
+}
+
+#choice {
+	text-align:center;
+	color:red;
+}
+
 div.wrapper {
 	background-color: white;
   margin-left: 20%;
-  margin-right: 20%;
 }
 
 .canvas {
 	display: block;   
-	margin-left: auto;   
-	margin-right: auto; 
+	margin: 0 auto;   
 }
 
 .center {
 	text-align:center
+}
+
+#indicator {
+	color:blue;
 }
