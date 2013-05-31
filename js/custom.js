@@ -81,9 +81,15 @@ function init() {
 		});
 	*/
 
+	//sync for correct match, both sides call
+	alert(game_id);
 	gameRef.child(game_id).child('correct_count').on('value', function(snapshot) {
 		$("#matches").text(snapshot.val()); 
 		$("#scores").text(snapshot.val()*20); 
+		$("#status").text('Congratulations! You two both agreed on this!'); 
+		//alert("Match!");
+		//alert("generate options!");
+		generate_options();
 	});
 
 	//sync for wrong match, both sides call
@@ -92,15 +98,7 @@ function init() {
 		gameRef.child(game_id).child("prefix").set(top_prefix);
 		image_id = snapshot.val();
 		set_image();
- 		//alert("Mismatch! Your partner disagree with you.");
-		generate_options();
-	});
-
-	//sync for correct match, both sides call
-	gameRef.child(game_id).child("correct_count").on('value', function(snapshot) {
-		$("#status").text('Congratulations! You two both agreed on this!'); 
-		//alert("Match, Good Job!");
-		for(var i=0; i<10000; i++) {a=1;} //time delay
+ 		//alert("Mismatch!");
 		generate_options();
 	});
 
@@ -177,6 +175,7 @@ function find_partner() {
 							gameRef.child(game_id).set('0');
 							gameRef.child(game_id).child("choice_num").set(0);
 							gameRef.child(game_id).child("correct_count").set(0);
+							gameRef.child(game_id).child("score_factor").set(1);
 							//gameRef.child(game_id).child("timer").set(secs);
 							gameRef.child(game_id).child("prefix").set(top_prefix);
 							gameRef.child(game_id).child(my_id).set(0);
@@ -218,6 +217,7 @@ function generate_options() {
 		var optionRef = new Firebase(tree_fb + snapshot.val());
 		optionRef.once('value', function(snapshot) {
 			var all = snapshot.child("all").val();
+			console.log(all);
 			if (all == 0 || all == null) {
 				handle_mismatch();
 				return;
@@ -247,34 +247,39 @@ function on_option_selected() {
 	var tmpGameRef = new Firebase(game_fb + game_id);
 	tmpGameRef.child(my_id).set(choice);
 
-	gameRef.child(game_id).child("choice_num").transaction(function(current_value) {
-  	return current_value + 1;
-	});
-
-	gameRef.child(game_id).once('value', function(snapshot) {
-  	if (snapshot.child("choice_num").val() == 2) {
-  		var my_choice = snapshot.child(my_id).val();
-			var partner_choice = snapshot.child(partner_id).val();
-  		if (my_choice == partner_choice) {
-  			handle_match(my_choice);
-  		} else {
-  			handle_mismatch();
-  		}
-  		gameRef.child(game_id).child("choice_num").set(0);
-  	}
-	});
-	
 	var buttons = document.getElementsByClassName('option');
 	for (i=0;i<buttons.length;i++) {
 		buttons[i].onclick = "";
 	}
-	
+
+	gameRef.child(game_id).child("choice_num").transaction(function(current_value) {
+  	return current_value + 1;
+  	//return current_value+my_id;
+	});
+
+	setTimeout(function (){
+		gameRef.child(game_id).once('value', function(snapshot) {
+			console.log(snapshot.child("choice_num").val());
+	  	if (snapshot.child("choice_num").val() == 2) {
+	  		var my_choice = snapshot.child(my_id).val();
+				var partner_choice = snapshot.child(partner_id).val();
+				console.log(my_choice + " "+partner_choice);
+	  		if (my_choice == partner_choice) {
+	  			handle_match(my_choice);
+	  		} else {
+	  			handle_mismatch();
+	  		}
+	  		gameRef.child(game_id).child("choice_num").set(0);
+	  	}
+		});
+  }, 500);	
 }
 
 function handle_mismatch() {
 	//generate a new image and upate image_id on server
 	image_id = gen_rand_image();
 	//alert('new image!');
+	gameRef.child(game_id).child("score_factor").set(1);
 	gameRef.child(game_id).child("image_id").set(image_id);
 }
 
@@ -283,10 +288,15 @@ function handle_match(my_choice) {
 	var new_prefix = update_prefix(my_choice);
 	//update score on server 
 	update_score(new_prefix);
-	//update correct_count on server 
-	gameRef.child(game_id).child("correct_count").transaction(function(current_value) {
-		return current_value + 1;
-	});
+	setTimeout(function (){
+		gameRef.child(game_id).child("score_factor").transaction(function(current_value) {
+			return current_value + 1;
+		});
+
+		gameRef.child(game_id).child("correct_count").transaction(function(current_value) {
+			return current_value + 1;
+		});
+	}, 500);	
 }
 
 /* actions after match */
