@@ -1,0 +1,66 @@
+<!DOCTYPE html> 
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>HappyLabel</title> 
+	
+<!-- 	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" /> -->
+	<link rel="stylesheet" type="text/css" href="style_3.css" />
+
+	<script type='text/javascript' src='https://cdn.firebase.com/v0/firebase.js'></script>
+	<script src="js/jquery-1.9.1.min.js"></script>
+	<script src="js/bootstrap.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/custom.js"></script>
+	<script src="js/check_browser_close.js"></script>
+
+</head> 
+
+<body>
+<div class="header">
+	<div class="title wrapper">
+		<div class="logo">
+			Happy Label
+		</div>
+		<div class="operation">
+		</div>
+	</div>
+</div>
+<div class="wrapper">
+	<div class="row clearfix">
+		<div class="welcome">
+			<div><h1>Welcome to Happy Label</h1></div>
+			<div><h4>There are <span id="player_count"></span> people playing.</h4></div>
+			<div><h4>Type your name here (optional)</h4></div>
+			<div><input id="start_name" placeholder="your name"></input></div>
+			<button class="button btn-m" onclick="find_partner()"> Start a new game </button>
+		</div>
+	</div>
+</div>
+
+
+
+<!-- <div class="wrapper">
+<h1> Welcome to Happy Label </h1>
+<h3>There are <span id="player_count"></span> people playing.</h3>
+<h3>#matches: <span id="matches"></span><br>current choice: <span id="choice"></span><br>previous round: <span id="status"></span></h4>
+
+<div class="center">
+	<button class="btn btn-large btn-success" onclick="find_partner()"> Start a new game </button>
+</div>
+<br>
+<img id="candidate" class="canvas" src="data/cat.jpg" height="400" width="400">
+<h3>What is in the image?</h3>
+<br>
+<div class="wrapper">
+	<table>
+		<tr id="option_container">
+		</tr>
+	</table>
+</div>
+</div> -->
+
+</body>
+

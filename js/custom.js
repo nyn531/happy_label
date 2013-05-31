@@ -66,8 +66,9 @@ function init() {
 	start_timer();
 
 	gameRef.child(game_id).onDisconnect().remove();
-
-	alert("Hey, Player "+ my_id +"! Your are now playing with Player "+partner_id+". Game Start!");
+	$("#my_id").text(my_id); 
+	$("#opponent_id").text(partner_id); 
+	alert("Game Start!");
 	/*
 		gameRef.child(game_id).child("timer").on('value', function(snapshot) {
 			if (snapshot.val() == 0) {
@@ -82,11 +83,12 @@ function init() {
 
 	gameRef.child(game_id).child('correct_count').on('value', function(snapshot) {
 		$("#matches").text(snapshot.val()); 
+		$("#scores").text(snapshot.val()*20); 
 	});
 
 	//sync for wrong match, both sides call
 	gameRef.child(game_id).child('image_id').on('value', function(snapshot) {
-		$("#status").text('Mismatch'); 
+		$("#status").text('Sorry! Your partner disagreed with you!'); 
 		gameRef.child(game_id).child("prefix").set(top_prefix);
 		image_id = snapshot.val();
 		set_image();
@@ -96,14 +98,14 @@ function init() {
 
 	//sync for correct match, both sides call
 	gameRef.child(game_id).child("correct_count").on('value', function(snapshot) {
-		$("#status").text('Match'); 
+		$("#status").text('Congratulations! You two both agreed on this!'); 
 		//alert("Match, Good Job!");
 		for(var i=0; i<10000; i++) {a=1;} //time delay
 		generate_options();
 	});
 
-	gameRef.on('child_removed', function(snapshot) {
-		if(snapshot.name() == game_id) {
+	playerRef.on('child_removed', function(snapshot) {
+		if(snapshot.name() == partner_id) {
 			end_game();
 		}
 	});
@@ -111,21 +113,29 @@ function init() {
 
 function end_game(){
 	alert("Game is over!");
+	/*
 	var buttons = document.getElementsByClassName('btn btn-large btn-success');
 	buttons[0].disabled=false;
 	buttons[0].onclick = find_partner();
-	gameRef.child(game_id).remove();
+	*/
+	
+	//gameRef.child(game_id).remove();
 	playerRef.child(my_id).child('game_id').set(0);	
 	playerRef.child(my_id).child('partner_id').remove();	
-	$("#timer").text(0); 
+	$("#timer").text(0);
+	$("#matches").text(0); 
+	$("#candidate").attr('src', "data/0.jpg");
+	$("#status").text("Thanks for playing!");
 	window.clearInterval(myInterval);
 	top.window.location = "http://stanford.edu/~nayinan/cgi-bin/esp/#";
 }
 
 
 function start_timer() {
+	/*
 	var buttons = document.getElementsByClassName('btn btn-large btn-success');
 	buttons[0].disabled=true;
+	*/
 	$("#timer").text(secs.toString()); 
 	myInterval = setInterval(function(){
 		time = $("#timer").text(); 
@@ -203,6 +213,7 @@ function gen_rand_image() {
 function generate_options() {
 	//var dataRef = new Firebase(image_fb + image_id);
 	$("#choice").text("");
+	$("#mode").text("Please make your choice!");
 	gameRef.child(game_id).child('prefix').once('value', function(snapshot) {
 		var optionRef = new Firebase(tree_fb + snapshot.val());
 		optionRef.once('value', function(snapshot) {
@@ -215,7 +226,8 @@ function generate_options() {
 			var container = $("#option_container");
 			container.empty();
 			for (i=0; i<all.length; i++) {
-				container.append('<tr><td><button id="btn'+i+'" onclick="on_option_selected();" option='+all[i]+' class="btn btn-large btn-success" href="#">'+ all[i] + '</button></td></tr>');
+				container.append('<li><a class="option" onclick="on_option_selected();" option='+all[i]+' href="#">'+all[i]+'</a></li>');
+				//container.append('<tr><td><button id="btn'+i+'" onclick="on_option_selected();" option='+all[i]+' class="btn btn-large btn-success" href="#">'+ all[i] + '</button></td></tr>');
 			}
 		});
 	});
@@ -231,6 +243,7 @@ function generate_options() {
 function on_option_selected() {
 	var choice = event.toElement.getAttribute("option");
 	$("#choice").text(choice); 
+	$("#mode").text("Your partner is still thinking...");
 	var tmpGameRef = new Firebase(game_fb + game_id);
 	tmpGameRef.child(my_id).set(choice);
 
@@ -250,10 +263,12 @@ function on_option_selected() {
   		gameRef.child(game_id).child("choice_num").set(0);
   	}
 	});
-	var buttons = document.getElementsByClassName('btn btn-large btn-success');
-	for (i=1;i<buttons.length;i++) {
-		buttons[i].disabled = true;
+	
+	var buttons = document.getElementsByClassName('option');
+	for (i=0;i<buttons.length;i++) {
+		buttons[i].onclick = "";
 	}
+	
 }
 
 function handle_mismatch() {

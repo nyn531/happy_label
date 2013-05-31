@@ -1,0 +1,268 @@
+/*h1 {text-align:center}
+
+h3 {text-align:center}
+
+div.wrapper {
+	background-color: white;
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+.canvas {
+	display: block;   
+	margin-left: auto;   
+	margin-right: auto; 
+}
+
+.center {
+	text-align:center
+}
+*/
+
+/***** Fonts *****/
+@import url(http://fonts.googleapis.com/css?family=Lato);
+
+
+/***** Basic setting *****/
+html, body, div, span, applet,
+object, iframe, h1, h2, h3, h4,
+h5, h6, p, blockquote, pre, a,
+abbr, acronym, address, big, cite,
+code, del, dfn, em, img, ins, kbd,
+q, s, samp, small, strike, strong,
+sub, sup, tt, var, b, u, i, center,
+dl, dt, dd, ol, ul, li, fieldset,
+form, label, legend, table, caption,
+tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details,
+embed, figure, figcaption, footer,
+header, hgroup, menu, nav, output,
+ruby, section, summary, time, mark,
+audio, video, button 				{ margin: 0; padding: 0; border: 0; font-size:100%; font:inherit;  }
+body {background-color:white; font:13px 'Lato', sans-serif; color:#222; -webkit-font-smoothing:antialiased; -webkit-text-size-adjust:none;}
+
+h1 				{ margin:0; padding:0; font-size:36px; line-height:40px; color:#333; }
+h2				{ margin:0; padding:0; font-size:30px; line-height:34px; color:#333; }
+h3 				{ margin:0; padding:0; font-size:24px; line-height:28px; color:#333; }
+h4 				{ margin:0; padding:0; font-size:18px; line-height:22px; color:#333; }
+h5 				{ margin:0; padding:0; font-size:14px; line-height:16px; color:#333; }
+h6 				{ margin:0; padding:0; font-size:12px; line-height:16px; color:#333; }
+
+/* force a vertical scrollbar to prevent a jumpy page      ------------*/
+html {overflow-y: scroll;}
+
+/*---  we use a lot of ULs that aren't bulleted. 
+	   don't forget to restore the bullets within content. ---*/
+ul, ol {list-style: none;}
+a, a:hover, a:active {text-decoration: none}
+
+/***** Clean up *****/
+
+.container:after 					{ content: "\0020"; display: block; height: 0; clear: both; visibility: hidden; } 
+.clearfix:before,
+.clearfix:after,
+.row:before,
+.row:after 							{ content:'\0020'; display:block; overflow:hidden; visibility:hidden; width:0; height:0; }
+.row:after,	.clearfix:after 		{ clear:both; }
+.row, 
+.clearfix 							{ zoom:1; }
+.clear 								{ clear:both; display:block; overflow:hidden; visibility:hidden; width:0; height:0;	}
+
+
+.btn{
+
+}
+
+.row{
+	margin-top:20px;
+}
+
+.wrapper{
+	width:960px;
+	margin:0 auto;
+}
+
+.header{
+	height:40px;
+	width:100%;
+	background-color:#EEEEEE;
+}
+
+.logo{
+	font-size:30px;
+	text-transform: uppercase;
+	font-weight:bolder;
+	float:left;
+}
+
+
+.welcome{
+	text-align:center;
+}
+
+.welcome div{
+	margin:30px;
+}
+
+#start_name{
+	width:300px;
+	font-size:20px;
+	padding:5px;
+}
+
+.operation{
+	float:right;
+}
+
+.avatar{
+	float:left;
+	width:235px;
+}
+
+.action{
+	width:235px;
+	float:left;
+	min-height:500px;
+}
+
+.think{
+	margin-top:150px;
+	text-align:center;
+	font-weight:bold;
+}
+
+.scoreboard{
+	float:left;
+	margin-left:20px;
+	margin-right:20px;
+	width:450px;
+	background-color:#EEEEEE;
+}
+
+.time{
+	font-weight:bolder;
+	text-align:center;
+	padding:15px 0 15px 0;
+}
+
+.score{
+	text-align:center;
+	width:130px;
+	margin-left:10px;
+	margin-right:10px;
+	float:left;
+	padding-bottom:15px;
+}
+
+.score h5{
+	margin-bottom:5px;
+}
+
+.playground{
+	margin-left:20px;
+	margin-right:20px;
+	width:450px;
+	float:left;
+	text-align:center;
+}
+
+.guess{
+	margin-bottom:10px;
+	text-align:center;
+}
+
+.status{
+	padding:10px;
+	text-align:center;
+	background-color:#fff8e7;
+	color:#0e1cb3;
+}
+
+.bullets{
+	margin-left:60px;
+	float:left;
+	width:300px;
+}
+
+.button{
+	 -webkit-box-shadow:inset 0 1px 0 rgba(255,255,255,0.5);
+	 -webkit-transition: all 0.2s ease-out;
+	color:#08233e;
+	color:white;
+	background-color:#CCCCCC;
+	border:none;
+
+}
+
+.button:hover{
+	-webkit-transition: all 0.2s ease-out;
+	color:white;
+	background-color:#E71B23;
+}
+
+.btn-s{
+	padding:10px;
+	font-size:15px;
+	font-weight:bold;
+}
+
+.btn-m{
+	padding:15px;
+	font-size:20px;
+	font-weight:bold;
+}
+
+.info{
+	width:300px;
+	margin-left:60px;
+	float:left;
+}
+
+
+.head{
+	float:left;
+}
+
+.head img{
+	width:80px;
+}
+
+.name{
+	float:left;
+	margin-left:20px;
+}
+
+#partner_id .head{
+	float:right;
+}
+
+
+
+.option{
+	-webkit-transition: all 0.1s ease-out;
+	display:block;
+	padding:10px;
+	font-size:16px;
+	background-color:#EEEEEE;
+	margin:2px 0 2px 0;
+}
+
+.option:hover{
+	background-color:#222222;
+	color:white;
+	-webkit-transition: all 0.1s ease-out;
+}
+
+.option:active{
+	background-color:black;
+}
+
+.and{
+	float:left;
+	width:100px;
+}
+
+.canvas{
+	background-color:#EEEEEE;
+}
+
