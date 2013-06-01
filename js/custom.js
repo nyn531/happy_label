@@ -82,7 +82,6 @@ function init() {
 	*/
 
 	//sync for correct match, both sides call
-	alert(game_id);
 	gameRef.child(game_id).child('correct_count').on('value', function(snapshot) {
 		$("#matches").text(snapshot.val()); 
 		$("#scores").text(snapshot.val()*20); 
@@ -92,9 +91,12 @@ function init() {
 		generate_options();
 	});
 
+	gameRef.child(game_id).child('wrong_count').on('value', function(snapshot) {
+		$("#status").text('Sorry! Your partner disagreed with you!'); 
+	});
 	//sync for wrong match, both sides call
 	gameRef.child(game_id).child('image_id').on('value', function(snapshot) {
-		$("#status").text('Sorry! Your partner disagreed with you!'); 
+		$("#status").text('Congratulations! You two both agreed on this!'); 
 		gameRef.child(game_id).child("prefix").set(top_prefix);
 		image_id = snapshot.val();
 		set_image();
@@ -175,6 +177,7 @@ function find_partner() {
 							gameRef.child(game_id).set('0');
 							gameRef.child(game_id).child("choice_num").set(0);
 							gameRef.child(game_id).child("correct_count").set(0);
+							gameRef.child(game_id).child("wrong_count").set(0);
 							gameRef.child(game_id).child("score_factor").set(1);
 							//gameRef.child(game_id).child("timer").set(secs);
 							gameRef.child(game_id).child("prefix").set(top_prefix);
@@ -219,7 +222,7 @@ function generate_options() {
 			var all = snapshot.child("all").val();
 			console.log(all);
 			if (all == 0 || all == null) {
-				handle_mismatch();
+				handle_end_image();
 				return;
 			}
 			all = all.split(",");
@@ -275,12 +278,24 @@ function on_option_selected() {
   }, 500);	
 }
 
+function handle_end_image() {
+	//generate a new image and upate image_id on server
+	image_id = gen_rand_image();
+	//alert('new image!');
+	gameRef.child(game_id).child("score_factor").set(1);
+	gameRef.child(game_id).child("image_id").set(image_id);
+}
+
 function handle_mismatch() {
 	//generate a new image and upate image_id on server
 	image_id = gen_rand_image();
 	//alert('new image!');
 	gameRef.child(game_id).child("score_factor").set(1);
 	gameRef.child(game_id).child("image_id").set(image_id);
+
+	gameRef.child(game_id).child("wrong_count").transaction(function(current_value) {
+		return current_value + 1;
+	});
 }
 
 function handle_match(my_choice) {
