@@ -82,10 +82,18 @@ function init() {
 	*/
 
 	//sync for correct match, both sides call
+	gameRef.child(game_id).child('score_factor').on('value', function(snapshot) {
+		$("#factor").text(snapshot.val()*20); 
+	});
+
+	//sync for correct match, both sides call
 	gameRef.child(game_id).child('correct_count').on('value', function(snapshot) {
-		$("#matches").text(snapshot.val()); 
-		$("#scores").text(snapshot.val()*20); 
+		$("#matches").text(snapshot.val());  
 		$("#status").text('Congratulations! You two both agreed on this!'); 
+		var cur_worth = $("#factor").text();
+		var cur_score = $("#scores").text();
+		var new_score = parseInt(cur_score, 10) + parseInt(cur_worth, 10);
+		$("#scores").text(new_score.toString()); 
 		//alert("Match!");
 		//alert("generate options!");
 		generate_options();
@@ -228,6 +236,7 @@ function generate_options() {
 			all = all.split(",");
 			var container = $("#option_container");
 			container.empty();
+			shuffle(all);
 			for (i=0; i<all.length; i++) {
 				container.append('<li><a class="option" onclick="on_option_selected();" option='+all[i]+' href="#">'+all[i]+'</a></li>');
 				//container.append('<tr><td><button id="btn'+i+'" onclick="on_option_selected();" option='+all[i]+' class="btn btn-large btn-success" href="#">'+ all[i] + '</button></td></tr>');
@@ -240,6 +249,17 @@ function generate_options() {
 			gameRef.child(game_id).child(my_id).set(0);
 		} 
 	});
+}
+
+function shuffle ( myArray ) {
+  var i = myArray.length, j, temp;
+  if ( i === 0 ) return false;
+  while ( --i ) {
+     j = Math.floor( Math.random() * ( i + 1 ) );
+     temp = myArray[i];
+     myArray[i] = myArray[j]; 
+     myArray[j] = temp;
+   }
 }
 
 // response to chosen option, single side call
@@ -292,7 +312,6 @@ function handle_mismatch() {
 	//alert('new image!');
 	gameRef.child(game_id).child("score_factor").set(1);
 	gameRef.child(game_id).child("image_id").set(image_id);
-
 	gameRef.child(game_id).child("wrong_count").transaction(function(current_value) {
 		return current_value + 1;
 	});
@@ -304,11 +323,11 @@ function handle_match(my_choice) {
 	//update score on server 
 	update_score(new_prefix);
 	setTimeout(function (){
-		gameRef.child(game_id).child("score_factor").transaction(function(current_value) {
+		gameRef.child(game_id).child("correct_count").transaction(function(current_value) {
 			return current_value + 1;
 		});
 
-		gameRef.child(game_id).child("correct_count").transaction(function(current_value) {
+		gameRef.child(game_id).child("score_factor").transaction(function(current_value) {
 			return current_value + 1;
 		});
 	}, 500);	
