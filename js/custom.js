@@ -93,12 +93,16 @@ function init() {
 		var cur_worth = $("#factor").text();
 		var cur_score = $("#scores").text();
 		var new_score = parseInt(cur_score, 10) + parseInt(cur_worth, 10);
+
 		$("#actor_2").text(snapshot.val()*20);
 		$("#scores").text(new_score.toString());
 		$("#plus").fadeIn(100);
 		setTimeout(function(){
 			$("#plus").fadeOut(100);
 		},1000);
+
+		//if (snapshot.val()!=0) $("#scores").text(new_score.toString()); 
+
 		//alert("Match!");
 		//alert("generate options!");
 		generate_options();
