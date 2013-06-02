@@ -93,14 +93,24 @@ function init() {
 		var cur_worth = $("#factor").text();
 		var cur_score = $("#scores").text();
 		var new_score = parseInt(cur_score, 10) + parseInt(cur_worth, 10);
-		$("#scores").text(new_score.toString()); 
+		$("#actor_2").text(snapshot.val()*20);
+		$("#scores").text(new_score.toString());
+		$("#plus").fadeIn(100);
+		setTimeout(function(){
+			$("#plus").fadeOut(100);
+		},1000);
 		//alert("Match!");
 		//alert("generate options!");
 		generate_options();
 	});
 
 	gameRef.child(game_id).child('wrong_count').on('value', function(snapshot) {
-		$("#status").text('Sorry! Your partner disagreed with you!'); 
+		$("#status").text('Sorry! Your partner disagreed with you!');
+		$("#actor_2").text(":-(");
+		$("#plus").fadeIn(100);
+		setTimeout(function(){
+			$("#plus").fadeOut(100);
+		},1000); 
 	});
 	//sync for wrong match, both sides call
 	gameRef.child(game_id).child('image_id').on('value', function(snapshot) {
@@ -135,7 +145,7 @@ function end_game(){
 	$("#candidate").attr('src', "data/0.jpg");
 	$("#status").text("Thanks for playing!");
 	window.clearInterval(myInterval);
-	top.window.location = "http://stanford.edu/~nayinan/cgi-bin/esp/#";
+	top.window.location = "http://stanford.edu/~zhengs/happy_label";
 }
 
 
