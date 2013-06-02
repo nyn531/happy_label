@@ -1,4 +1,4 @@
-var top_prefix = "tree2/Vehicle";
+var top_prefix = "tree3/Vehicle";
 var image_num = 129;
 var secs = 200;
 var iambusy = 0;
@@ -18,6 +18,7 @@ var imageRef = new Firebase('https://nyn531.firebaseIO.com/img');
 var image_fb = 'https://nyn531.firebaseIO.com/img/';
 var tree_fb = 'https://nyn531.firebaseIO.com/';
 var game_fb = 'https://nyn531.firebaseIO.com/game/';
+var delRef = new Firebase('https://nyn531.firebaseIO.com/del');
 var image_prefix = "data/";
 var image_affix = ".jpg";
 
@@ -37,7 +38,7 @@ function get_param(){
 function wait() {
 	var params = get_param();
 	if (params['id']) {
-		console.log(params);
+		//console.log(params);
 		partner_id = params['id'];
 		game_id = params['game_id'];
 		my_name = $('#start_name').val();
@@ -57,11 +58,10 @@ function wait() {
 }
 
 function start_game() {
-		playerRef.child(partner_id).set('1'); //change player status 
-		playerRef.child(my_id).set('1');			//change player status 
+		//playerRef.child(partner_id).set('1'); //change player status 
+		//playerRef.child(my_id).set('1');			//change player status 
 		iambusy = 1;
-
-		gameRef.child(game_id).set('0');
+		
 		gameRef.child(game_id).child("choice_num").set(0);
 		gameRef.child(game_id).child("correct_count").set(0);
 		gameRef.child(game_id).child("wrong_count").set(0);
@@ -69,8 +69,10 @@ function start_game() {
 		gameRef.child(game_id).child("prefix").set(top_prefix);
 		gameRef.child(game_id).child(my_id).set(0);
 		gameRef.child(game_id).child(partner_id).set(0);
-		playerRef.child(partner_id).set({game_id:game_id, partner_id:my_id, partner_name:my_name}); //change player status 
-		playerRef.child(my_id).set({game_id:game_id, partner_id:partner_id, partner_name:partner_name});			//change player status 
+
+		playerRef.child(partner_id).update({game_id:game_id, partner_id:my_id, partner_name:my_name}); //change player status 
+		playerRef.child(my_id).update({game_id:game_id, partner_id:partner_id, partner_name:partner_name});			//change player status
+
 		image_id = gen_rand_image();
 		gameRef.child(game_id).child('image_id').set(image_id);	
 }
@@ -78,28 +80,44 @@ function start_game() {
 // both sides call
 $(document).ready(function() {
 	//register player to database
-	playerIDRef.transaction(function(current_value) {
-		my_id = current_value + 1; //generate my player id
-		if (my_id == 1) playerRef.child(my_id).set('1');
-		playerRef.child(my_id).set({game_id:0}); //add myself to player list
-		// handle id=1 bug case 
-		if (my_id !=1) {
-			playerRef.child(my_id).on('value', function(snapshot) { // game starts
-				if (snapshot.val().game_id >1) {
-					game_id = snapshot.val().game_id;
-					partner_id = snapshot.val().partner_id;
-					partner_name = snapshot.val().partner_name;
-					init();
-				}
-			});
-	  }
-		return my_id;
-	});
+	var params = get_param();
+	if (params['my_id']) {
+		my_id = params['my_id'];
+		playerRef.child(my_id).child('game_num').transaction(function(current_value) {
+			return current_value+1;
+		});
+		playerRef.child(my_id).on('value', function(snapshot) { // game starts
+			if (snapshot.val().game_id >1) {
+				game_id = snapshot.val().game_id;
+				partner_id = snapshot.val().partner_id;
+				partner_name = snapshot.val().partner_name;
+				init();
+			}
+		});
+	} else {
+		playerIDRef.transaction(function(current_value) {
+			my_id = current_value + 1; //generate my player id
+			if (my_id == 1) playerRef.child(my_id).set('1');
+			playerRef.child(my_id).set({game_id:0, game_num:0}); //add myself to player list
+			// handle id=1 bug case 
+			if (my_id !=1) {
+				playerRef.child(my_id).on('value', function(snapshot) { // game starts
+					if (snapshot.val().game_id >1) {
+						game_id = snapshot.val().game_id;
+						partner_id = snapshot.val().partner_id;
+						partner_name = snapshot.val().partner_name;
+						init();
+					}
+				});
+		  }
+			return my_id;
+		});
+	}		
 
 	//increase player count
 	playerCountRef.transaction(function(current_value) {
 		update_value = current_value + 1; 
-		playerRef.child(my_id).onDisconnect().remove();
+		//playerRef.child(my_id).onDisconnect().remove();
 	  return update_value;
 	});
 
@@ -123,7 +141,7 @@ function init() {
 	alert("Game Start!");
 	start_timer();
 
-	gameRef.child(game_id).onDisconnect().remove();
+	//gameRef.child(game_id).onDisconnect().remove();
 	$("#my_id").text(my_name); 
 	$("#opponent_id").text(partner_name); 
 
@@ -167,8 +185,8 @@ function init() {
 		generate_options();
 	});
 
-	playerRef.on('child_removed', function(snapshot) {
-		if(snapshot.name() == partner_id) {
+	delRef.on('value', function(snapshot) {
+		if(snapshot.val() == partner_id) {
 			end_game();
 		}
 	});
@@ -184,7 +202,7 @@ function end_game(){
 	$("#candidate").attr('src', "data/0.jpg");
 	$("#status").text("Thanks for playing!");
 	window.clearInterval(myInterval);
-	top.window.location = "play.html";
+	top.window.location = "play.html?my_id="+my_id;
 }
 
 
@@ -261,7 +279,7 @@ function generate_options() {
 		var optionRef = new Firebase(tree_fb + snapshot.val());
 		optionRef.once('value', function(snapshot) {
 			var all = snapshot.child("all").val();
-			console.log(all);
+			//console.log(all);
 			if (all == 0 || all == null) {
 				handle_end_image();
 				return;
@@ -315,11 +333,11 @@ function on_option_selected() {
 
 	setTimeout(function (){
 		gameRef.child(game_id).once('value', function(snapshot) {
-			console.log(snapshot.child("choice_num").val());
+			//console.log(snapshot.child("choice_num").val());
 	  	if (snapshot.child("choice_num").val() == 2) {
 	  		var my_choice = snapshot.child(my_id).val();
 				var partner_choice = snapshot.child(partner_id).val();
-				console.log(my_choice + " "+partner_choice);
+				//console.log(my_choice + " "+partner_choice);
 	  		if (my_choice == partner_choice) {
 	  			handle_match(my_choice);
 	  		} else {
@@ -385,3 +403,12 @@ function update_score(new_prefix) {
 		return current_value + 1;
 	});
 }
+
+function updatePlays() {
+  var countRef = new Firebase('https://nyn531.firebaseIO.com/player_count');
+  countRef.transaction(function(current_value) {
+    return current_value - 1;
+  });
+}
+
+ 
