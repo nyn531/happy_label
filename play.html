@@ -19,6 +19,33 @@
 </head> 
 
 <body>
+
+<div id="start" >
+<div class="header">
+	<div class="title wrapper">
+		<div class="logo">
+			Happy Label
+		</div>
+		<div class="operation">
+		</div>
+	</div>
+</div>
+<div class="wrapper">
+	<div class="row clearfix">
+		<div class="welcome">
+			<div><h1>Welcome to Happy Label</h1></div>
+			<div><h4>There are <span id="player_count"></span> people playing.</h4></div>
+			<div><h4><span id="link_title"></span></h4></div>
+			<div><h4><span id="link"></span></h4></div>
+			<div><h4>Type your name here</h4></div>
+			<div><input id="start_name" placeholder="your name"></input></div>
+			<button class="button btn-m" onclick="wait()">Start a new game</button>
+		</div>
+	</div>
+</div>
+</div>
+
+<div id="play" style="display: none;">
 <div class="header">
 	<div class="title wrapper">
 		<div class="logo">
@@ -34,7 +61,7 @@
 		<div class="avatar" id="partner_id">
 			<div class="head">
 				<img src="img/head.jpg"></img>
-				<h4>guest<span id="opponent_id"></span></h4>
+				<h4><span id="opponent_id"></span></h4>
 			</div>
 		</div>
 		<div class="scoreboard clearfix">
@@ -56,7 +83,7 @@
 				</div>
 				<div class="total clearfix">
 					<div class="total_cell left"><h5>Total credits</h5><h2><span id="scores">00</span></h2></div>
-					<div class="total_cell"><h5>Total matches</h5><h2><span id="matches">3</span></h2></div>
+					<div class="total_cell"><h5>Total matches</h5><h2><span id="matches">0</span></h2></div>
 				</div>
 			</div>
 <!-- 			<h4>#matches: <span id="matches"></span><br>current choice: <span id="choice"></span><br>previous round: <span id="status"></span></h4> -->
@@ -64,7 +91,7 @@
 		<div class="avatar" id="you_id">
 			<div class="head">
 				<img src="img/head.jpg"></img>
-				<h4>guest<span id="my_id"></span></h4>
+				<h4><span id="my_id"></span></h4>
 			</div>
 		</div>		
 	</div>
@@ -75,7 +102,7 @@
 			<div class="think"><h4 id="mode">Still thinking...</h4></div>
 		</div>
 		<div class="playground">
-			<img id="candidate" class="canvas" src="data/cat.jpg" width="450">
+			<img id="candidate" class="canvas" src="data/0.jpg" width="450">
 			<div class="achieve" id="plus">
 				<span id="actor_2"> + 20</span>
 			</div>
@@ -95,6 +122,8 @@
 			</ul>
 		</div>
 	</div>
+</div>
+
 </div>
 
 </body>

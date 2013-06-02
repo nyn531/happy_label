@@ -1,10 +1,11 @@
 var top_prefix = "tree2/Vehicle";
 var image_num = 129;
 var secs = 200;
-//var timer_on = 0;
 var iambusy = 0;
 var my_id = 0; 
 var partner_id = 0;
+var my_name = "Me";
+var partner_name = "My Partner";
 var game_id = 0;
 var image_id = 0;
 var myInterval = null;
@@ -20,6 +21,60 @@ var game_fb = 'https://nyn531.firebaseIO.com/game/';
 var image_prefix = "data/";
 var image_affix = ".jpg";
 
+
+function get_param(){
+	var prmstr = window.location.search.substr(1);
+	var prmarr = prmstr.split ("&");
+	var params = {};
+
+	for ( var i = 0; i < prmarr.length; i++) {
+	    var tmparr = prmarr[i].split("=");
+	    params[tmparr[0]] = tmparr[1];
+	}
+	return params;
+}
+
+function wait() {
+	var params = get_param();
+	if (params['id']) {
+		console.log(params);
+		partner_id = params['id'];
+		game_id = params['game_id'];
+		my_name = $('#start_name').val();
+		partner_name = params['name'];
+		start_game();
+	} else {
+		my_name = $('#start_name').val();
+		gameCountRef.transaction(function(current_game_id) {
+			if (current_game_id != 0) {
+				$("#link_title").text("Please copy below link to your friend to start a game:");
+				$("#link").text("http://stanford.edu/~nayinan/cgi-bin/esp/play.html?id="+my_id+"&name="+my_name+"&game_id="+current_game_id);
+				game_id = current_game_id + 1; 		//generate my game id
+				return game_id;
+			}
+		});
+	}
+}
+
+function start_game() {
+		playerRef.child(partner_id).set('1'); //change player status 
+		playerRef.child(my_id).set('1');			//change player status 
+		iambusy = 1;
+
+		gameRef.child(game_id).set('0');
+		gameRef.child(game_id).child("choice_num").set(0);
+		gameRef.child(game_id).child("correct_count").set(0);
+		gameRef.child(game_id).child("wrong_count").set(0);
+		gameRef.child(game_id).child("score_factor").set(1);
+		gameRef.child(game_id).child("prefix").set(top_prefix);
+		gameRef.child(game_id).child(my_id).set(0);
+		gameRef.child(game_id).child(partner_id).set(0);
+		playerRef.child(partner_id).set({game_id:game_id, partner_id:my_id, partner_name:my_name}); //change player status 
+		playerRef.child(my_id).set({game_id:game_id, partner_id:partner_id, partner_name:partner_name});			//change player status 
+		image_id = gen_rand_image();
+		gameRef.child(game_id).child('image_id').set(image_id);	
+}
+
 // both sides call
 $(document).ready(function() {
 	//register player to database
@@ -33,6 +88,7 @@ $(document).ready(function() {
 				if (snapshot.val().game_id >1) {
 					game_id = snapshot.val().game_id;
 					partner_id = snapshot.val().partner_id;
+					partner_name = snapshot.val().partner_name;
 					init();
 				}
 			});
@@ -62,24 +118,14 @@ $(document).ready(function() {
 // both sides call 
 function init() {
 	if (game_id == null) return;
-
+	$("#start").css('display','none');
+	$("#play").css('display','inline');
+	alert("Game Start!");
 	start_timer();
 
 	gameRef.child(game_id).onDisconnect().remove();
-	$("#my_id").text(my_id); 
-	$("#opponent_id").text(partner_id); 
-	alert("Game Start!");
-	/*
-		gameRef.child(game_id).child("timer").on('value', function(snapshot) {
-			if (snapshot.val() == 0) {
-				alert("Time is up! Thanks for playing!");
-				$("#timer").text("0"); 
-				end_game();
-			} else {
-				$("#timer").text(snapshot.val()); 
-			}
-		});
-	*/
+	$("#my_id").text(my_name); 
+	$("#opponent_id").text(partner_name); 
 
 	//sync for correct match, both sides call
 	gameRef.child(game_id).child('score_factor').on('value', function(snapshot) {
@@ -94,17 +140,13 @@ function init() {
 		var cur_score = $("#scores").text();
 		var new_score = parseInt(cur_score, 10) + parseInt(cur_worth, 10);
 
-		$("#actor_2").text(snapshot.val()*20);
-		$("#scores").text(new_score.toString());
+		$("#actor_2").text("+"+parseInt(cur_worth, 10));
+		if (snapshot.val()!=0) $("#scores").text(new_score.toString());
 		$("#plus").fadeIn(100);
 		setTimeout(function(){
 			$("#plus").fadeOut(100);
 		},1000);
 
-		//if (snapshot.val()!=0) $("#scores").text(new_score.toString()); 
-
-		//alert("Match!");
-		//alert("generate options!");
 		generate_options();
 	});
 
@@ -122,7 +164,6 @@ function init() {
 		gameRef.child(game_id).child("prefix").set(top_prefix);
 		image_id = snapshot.val();
 		set_image();
- 		//alert("Mismatch!");
 		generate_options();
 	});
 
@@ -135,29 +176,19 @@ function init() {
 
 function end_game(){
 	alert("Game is over!");
-	/*
-	var buttons = document.getElementsByClassName('btn btn-large btn-success');
-	buttons[0].disabled=false;
-	buttons[0].onclick = find_partner();
-	*/
-	
-	//gameRef.child(game_id).remove();
 	playerRef.child(my_id).child('game_id').set(0);	
 	playerRef.child(my_id).child('partner_id').remove();	
+	playerRef.child(my_id).child('partner_name').remove();	
 	$("#timer").text(0);
 	$("#matches").text(0); 
 	$("#candidate").attr('src', "data/0.jpg");
 	$("#status").text("Thanks for playing!");
 	window.clearInterval(myInterval);
-	top.window.location = "http://stanford.edu/~zhengs/happy_label";
+	top.window.location = "play.html";
 }
 
 
 function start_timer() {
-	/*
-	var buttons = document.getElementsByClassName('btn btn-large btn-success');
-	buttons[0].disabled=true;
-	*/
 	$("#timer").text(secs.toString()); 
 	myInterval = setInterval(function(){
 		time = $("#timer").text(); 
@@ -165,18 +196,6 @@ function start_timer() {
 		if (time_int == 0) end_game();
 		$("#timer").text(time_int.toString()); 
 	},1000);
-//sync for correct match, both sides call
-/*
-	gameRef.child(game_id).child("timer").once('value', function(snapshot) {
-		if (snapshot.val()==secs) {
-			myInterval = setInterval(function(){
-				gameRef.child(game_id).child("timer").transaction(function(current_value) {
-				  return current_value - 1; 
-				});
-			},1000);
-		}
-	});
-*/
 }
 
 // find partner and game setup, single side call
