@@ -1,6 +1,6 @@
 var top_prefix = "tree3/Vehicle";
 var image_num = 129;
-var secs = 200;
+var secs = 120;
 var iambusy = 0;
 var my_id = 0; 
 var partner_id = 0;
@@ -9,15 +9,15 @@ var partner_name = "My Partner";
 var game_id = 0;
 var image_id = 0;
 var myInterval = null;
-var playerRef = new Firebase('https://nyn531.firebaseIO.com/player');
-var playerIDRef = new Firebase('https://nyn531.firebaseIO.com/player_id');
-var playerCountRef = new Firebase('https://nyn531.firebaseIO.com/player_count');
-var gameRef = new Firebase('https://nyn531.firebaseIO.com/game');
-var gameCountRef = new Firebase('https://nyn531.firebaseIO.com/game_count');
-var imageRef = new Firebase('https://nyn531.firebaseIO.com/img');
-var image_fb = 'https://nyn531.firebaseIO.com/img/';
+var playerRef = new Firebase('https://nyn531.firebaseIO.com/test_player_test');
+var playerIDRef = new Firebase('https://nyn531.firebaseIO.com/test_player_id');
+var playerCountRef = new Firebase('https://nyn531.firebaseIO.com/test_player_count');
+var gameRef = new Firebase('https://nyn531.firebaseIO.com/test_game');
+var gameCountRef = new Firebase('https://nyn531.firebaseIO.com/test_game_count');
+var imageRef = new Firebase('https://nyn531.firebaseIO.com/test_img');
+var image_fb = 'https://nyn531.firebaseIO.com/test_img/';
 var tree_fb = 'https://nyn531.firebaseIO.com/';
-var game_fb = 'https://nyn531.firebaseIO.com/game/';
+var game_fb = 'https://nyn531.firebaseIO.com/test_game/';
 var delRef = new Firebase('https://nyn531.firebaseIO.com/del');
 var image_prefix = "data/";
 var image_affix = ".jpg";
@@ -49,7 +49,7 @@ function wait() {
 		gameCountRef.transaction(function(current_game_id) {
 			if (current_game_id != 0) {
 				$("#link_title").text("Please copy below link to your friend to start a game:");
-				$("#link").text("http://stanford.edu/~nayinan/cgi-bin/esp/play.html?id="+my_id+"&name="+my_name+"&game_id="+current_game_id);
+				$("#link").text(window.location+"?id="+my_id+"&name="+my_name+"&game_id="+current_game_id);
 				game_id = current_game_id + 1; 		//generate my game id
 				return game_id;
 			}
