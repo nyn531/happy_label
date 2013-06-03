@@ -1,6 +1,6 @@
 var top_prefix = "tree3/Vehicle";
 var image_num = 129;
-var secs = 200;
+var secs = 120;
 var iambusy = 0;
 var my_id = 0; 
 var partner_id = 0;
@@ -11,7 +11,7 @@ var image_id = 0;
 var myInterval = null;
 var playerRef = new Firebase('https://nyn531.firebaseIO.com/player');
 var playerIDRef = new Firebase('https://nyn531.firebaseIO.com/player_id');
-var playerCountRef = new Firebase('https://nyn531.firebaseIO.com/player_count');
+var playerCountRef = new Firebase('https://nyn531.firebaseIO.com/player_id');
 var gameRef = new Firebase('https://nyn531.firebaseIO.com/game');
 var gameCountRef = new Firebase('https://nyn531.firebaseIO.com/game_count');
 var imageRef = new Firebase('https://nyn531.firebaseIO.com/img');
