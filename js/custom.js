@@ -9,6 +9,7 @@ var partner_name = "My Partner";
 var game_id = 0;
 var image_id = 0;
 var myInterval = null;
+
 var playerRef = new Firebase('https://nyn531.firebaseIO.com/test_player_test');
 var playerIDRef = new Firebase('https://nyn531.firebaseIO.com/test_player_id');
 var playerCountRef = new Firebase('https://nyn531.firebaseIO.com/test_player_count');
@@ -16,6 +17,14 @@ var gameRef = new Firebase('https://nyn531.firebaseIO.com/test_game');
 var gameCountRef = new Firebase('https://nyn531.firebaseIO.com/test_game_count');
 var imageRef = new Firebase('https://nyn531.firebaseIO.com/test_img');
 var image_fb = 'https://nyn531.firebaseIO.com/test_img/';
+// var playerRef = new Firebase('https://nyn531.firebaseIO.com/player');
+// var playerIDRef = new Firebase('https://nyn531.firebaseIO.com/player_id');
+// var playerCountRef = new Firebase('https://nyn531.firebaseIO.com/player_id');
+// var gameRef = new Firebase('https://nyn531.firebaseIO.com/game');
+// var gameCountRef = new Firebase('https://nyn531.firebaseIO.com/game_count');
+// var imageRef = new Firebase('https://nyn531.firebaseIO.com/img');
+// var image_fb = 'https://nyn531.firebaseIO.com/img/';
+// >>>>>>> 684be70679b8780579df2e7c89164bd9fcb7f83d
 var tree_fb = 'https://nyn531.firebaseIO.com/';
 var game_fb = 'https://nyn531.firebaseIO.com/test_game/';
 var delRef = new Firebase('https://nyn531.firebaseIO.com/del');
