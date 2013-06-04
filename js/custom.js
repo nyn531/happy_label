@@ -57,6 +57,8 @@ function wait() {
 		my_name = $('#start_name').val();
 		gameCountRef.transaction(function(current_game_id) {
 			if (current_game_id != 0) {
+				$("#typeName").hide();
+				$("#sendLink").show();
 				$("#link_title").text("Please copy below link to your friend to start a game:");
 				$("#link").text(window.location+"?id="+my_id+"&name="+my_name+"&game_id="+current_game_id);
 				game_id = current_game_id + 1; 		//generate my game id

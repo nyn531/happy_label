@@ -34,7 +34,7 @@ html {overflow-y: scroll;}
 /*---  we use a lot of ULs that aren't bulleted. 
 	   don't forget to restore the bullets within content. ---*/
 ul, ol {list-style: none;}
-a, a:hover, a:active {text-decoration: none}
+a, a:hover, a:active {text-decoration: none; color:#333;}
 
 /***** Clean up *****/
 
@@ -69,24 +69,20 @@ a, a:hover, a:active {text-decoration: none}
 }
 
 .logo{
-	font-size:30px;
+	font-size:20px;
+	line-height:40px;
 	text-transform: uppercase;
 	font-weight:bolder;
 	float:left;
 }
 
-
-.welcome{
-	text-align:center;
-}
-
-.welcome div{
+.content{
 	margin:30px;
 }
 
 #start_name{
-	width:300px;
-	font-size:20px;
+	width:346px;
+	font-size:14px;
 	padding:5px;
 }
 
@@ -210,13 +206,15 @@ a, a:hover, a:active {text-decoration: none}
 	 -webkit-box-shadow:inset 0 1px 0 rgba(255,255,255,0.5);
 	 -webkit-transition: all 0.2s ease-out;
 	color:#08233e;
+	border: 2px solid white;
 	color:white;
 	background-color:#CCCCCC;
-	border:none;
+	margin: 0;
 
 }
 
 .button:hover{
+	border: 2px solid #4C2700;
 	-webkit-transition: all 0.2s ease-out;
 	color:white;
 	background-color:#E71B23;
@@ -288,3 +286,99 @@ a, a:hover, a:active {text-decoration: none}
 	background-color:#EEEEEE;
 }
 
+
+.introduction{
+	width:540px;
+	float:left;
+}
+
+.getReady{
+	float:left;
+	margin-left:20px;
+	background-color:#F2F2F2;
+	height:400px;
+	width:360px;
+	padding:20px;
+
+}
+
+.link{
+	border:1px solid #AAAAAA;
+	background-color: white;
+	padding:10px;
+}
+
+.link:hover{
+	border:1px solid #E71B23;
+}
+
+.ins_cell{
+	height:100px;
+	display:table;
+	float:left;
+}
+
+.ins_cell span{
+	display:table-cell;
+	vertical-align:center;
+}
+
+#des{
+	text-align:left;
+	padding-left:20px;
+	font-size:14px;
+	line-height:20px;
+}
+
+.bg{
+	height:100px;
+	min-width:960px;
+	background:url(img/background.jpg) 50%;
+}
+
+.brief{
+	margin-bottom:20px;
+
+}
+
+.brief h4,.brief h5{
+	margin-bottom:10px;
+}
+
+.howto h4{
+	margin-bottom:10px;
+	font-weight:bolder;
+}
+
+.player_count{
+	display:block;
+	font-weight:bold;
+}
+
+.player_count h5{
+	color:#E71B23;
+}
+
+.heads_1{
+	width:360px;
+	height:144px;
+	background:url(img/head_vague.jpg) top left no-repeat;
+}
+
+.heads_2{
+	width:360px;
+	height:144px;
+	background:url(img/head_solid.jpg) top left no-repeat;
+}
+
+#sendLink{
+	display:none;
+}
+
+.right_box div{
+	margin-bottom:20px;
+}
+
+.right_box h5{
+	line-height:20px;
+}
