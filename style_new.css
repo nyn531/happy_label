@@ -302,15 +302,6 @@ a, a:hover, a:active {text-decoration: none; color:#333;}
 
 }
 
-.link{
-	border:1px solid #AAAAAA;
-	background-color: white;
-	padding:10px;
-}
-
-.link:hover{
-	border:1px solid #E71B23;
-}
 
 .ins_cell{
 	height:100px;
