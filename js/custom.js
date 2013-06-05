@@ -71,7 +71,7 @@ function wait() {
 function load_leaderboard() {
   var container = $("#leaderboard");
 	container.empty();
-	top10Query = leaderboardRef.startAt().limit(10);
+	top10Query = leaderboardRef.startAt().limit(8);
 	top10Query.once('value', function(snapshot) {
 	  snapshot.forEach(function(childSnapshot) {
 			container.append('<tr><td id="pairs">'+childSnapshot.val().name+'</td><td id="total_score">'+childSnapshot.val().score+'</td></tr>');
@@ -147,6 +147,7 @@ $(document).ready(function() {
 	//player count real time update
 	playerCountRef.on('value', function(snapshot) {
 		$("#player_count").text(snapshot.val()); 
+		$("#player_count_2").text(snapshot.val()); 
 	});
 
 	//player real time update (this is necessary even doing no operation)
