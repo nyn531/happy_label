@@ -28,4 +28,7 @@ $(document).ready(function() {
 	$("#play_again").click(function(){
 		top.window.location = gamelink;
 	});
+	$("#check_leader").click(function(){
+		top.window.location = gamelink;
+	});
 });

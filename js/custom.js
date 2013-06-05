@@ -1,6 +1,6 @@
 var top_prefix = "tree3/Vehicle";
 var image_num = 129;
-var secs = 30;
+var secs = 120;
 var iambusy = 0;
 var my_id = 0; 
 var partner_id = 0;
