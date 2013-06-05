@@ -1,6 +1,6 @@
 var top_prefix = "tree3/Vehicle";
 var image_num = 129;
-var secs = 120;
+var secs = 20;
 var iambusy = 0;
 var my_id = 0; 
 var partner_id = 0;
@@ -9,24 +9,23 @@ var partner_name = "My Partner";
 var game_id = 0;
 var image_id = 0;
 var myInterval = null;
-
-var playerRef = new Firebase('https://nyn531.firebaseIO.com/test_player_test');
-var playerIDRef = new Firebase('https://nyn531.firebaseIO.com/test_player_id');
-var playerCountRef = new Firebase('https://nyn531.firebaseIO.com/test_player_count');
-var gameRef = new Firebase('https://nyn531.firebaseIO.com/test_game');
-var gameCountRef = new Firebase('https://nyn531.firebaseIO.com/test_game_count');
-var imageRef = new Firebase('https://nyn531.firebaseIO.com/test_img');
-var image_fb = 'https://nyn531.firebaseIO.com/test_img/';
-// var playerRef = new Firebase('https://nyn531.firebaseIO.com/player');
-// var playerIDRef = new Firebase('https://nyn531.firebaseIO.com/player_id');
-// var playerCountRef = new Firebase('https://nyn531.firebaseIO.com/player_id');
-// var gameRef = new Firebase('https://nyn531.firebaseIO.com/game');
-// var gameCountRef = new Firebase('https://nyn531.firebaseIO.com/game_count');
-// var imageRef = new Firebase('https://nyn531.firebaseIO.com/img');
-// var image_fb = 'https://nyn531.firebaseIO.com/img/';
-// >>>>>>> 684be70679b8780579df2e7c89164bd9fcb7f83d
+var gamelink = "http://stanford.edu/~nayinan/cgi-bin/esp/index.html";
+var resultlink = "http://stanford.edu/~nayinan/cgi-bin/esp/result.html";
+// var playerRef = new Firebase('https://nyn531.firebaseIO.com/test_player_test');
+// var playerIDRef = new Firebase('https://nyn531.firebaseIO.com/test_player_id');
+// var playerCountRef = new Firebase('https://nyn531.firebaseIO.com/test_player_count');
+// var gameRef = new Firebase('https://nyn531.firebaseIO.com/test_game');
+// var gameCountRef = new Firebase('https://nyn531.firebaseIO.com/test_game_count');
+// var imageRef = new Firebase('https://nyn531.firebaseIO.com/test_img');
+// var image_fb = 'https://nyn531.firebaseIO.com/test_img/';
+var playerRef = new Firebase('https://nyn531.firebaseIO.com/player');
+var playerIDRef = new Firebase('https://nyn531.firebaseIO.com/player_id');
+var playerCountRef = new Firebase('https://nyn531.firebaseIO.com/player_id');
+var gameRef = new Firebase('https://nyn531.firebaseIO.com/game');
+var gameCountRef = new Firebase('https://nyn531.firebaseIO.com/game_count');
+var imageRef = new Firebase('https://nyn531.firebaseIO.com/img');
+var image_fb = 'https://nyn531.firebaseIO.com/img/';
 var tree_fb = 'https://nyn531.firebaseIO.com/';
-var game_fb = 'https://nyn531.firebaseIO.com/test_game/';
 var delRef = new Firebase('https://nyn531.firebaseIO.com/del');
 var image_prefix = "data/";
 var image_affix = ".jpg";
@@ -47,7 +46,6 @@ function get_param(){
 function wait() {
 	var params = get_param();
 	if (params['id']) {
-		//console.log(params);
 		partner_id = params['id'];
 		game_id = params['game_id'];
 		my_name = $('#start_name').val();
@@ -60,7 +58,7 @@ function wait() {
 				$("#typeName").hide();
 				$("#sendLink").show();
 				$("#link_title").text("Please copy below link to your friend to start a game:");
-				$("#link").text(window.location+"?id="+my_id+"&name="+my_name+"&game_id="+current_game_id);
+				$("#link").text(gamelink+"?id="+my_id+"&name="+my_name+"&game_id="+current_game_id);
 				game_id = current_game_id + 1; 		//generate my game id
 				return game_id;
 			}
@@ -205,15 +203,18 @@ function init() {
 
 function end_game(){
 	alert("Game is over!");
+	var tmp_matches = $("#matches").text();
+	var tmp_scores = $("#scores").text();
 	playerRef.child(my_id).child('game_id').set(0);	
-	playerRef.child(my_id).child('partner_id').remove();	
-	playerRef.child(my_id).child('partner_name').remove();	
-	$("#timer").text(0);
-	$("#matches").text(0); 
-	$("#candidate").attr('src', "data/0.jpg");
-	$("#status").text("Thanks for playing!");
+	//playerRef.child(my_id).child('partner_id').remove();	
+	//playerRef.child(my_id).child('partner_name').remove();	
+	//$("#timer").text(0);
+	//$("#matches").text(0); 
+	//$("#candidate").attr('src', "data/0.jpg");
+	//$("#status").text("Thanks for playing!");
 	window.clearInterval(myInterval);
-	top.window.location = "play.html?my_id="+my_id;
+	//top.window.location = gamelink+"?my_id="+my_id;
+	top.window.location = resultlink+"?my_name="+my_name+"&partner_name="+partner_name+"&matches="+tmp_matches+"&scores="+tmp_scores;
 }
 
 
@@ -249,7 +250,6 @@ function find_partner() {
 							gameRef.child(game_id).child("correct_count").set(0);
 							gameRef.child(game_id).child("wrong_count").set(0);
 							gameRef.child(game_id).child("score_factor").set(1);
-							//gameRef.child(game_id).child("timer").set(secs);
 							gameRef.child(game_id).child("prefix").set(top_prefix);
 							gameRef.child(game_id).child(my_id).set(0);
 							gameRef.child(game_id).child(partner_id).set(0);
@@ -301,7 +301,6 @@ function generate_options() {
 			shuffle(all);
 			for (i=0; i<all.length; i++) {
 				container.append('<li><a class="option" onclick="on_option_selected();" option='+all[i]+' href="#">'+all[i]+'</a></li>');
-				//container.append('<tr><td><button id="btn'+i+'" onclick="on_option_selected();" option='+all[i]+' class="btn btn-large btn-success" href="#">'+ all[i] + '</button></td></tr>');
 			}
 		});
 	});
@@ -329,7 +328,7 @@ function on_option_selected() {
 	var choice = event.toElement.getAttribute("option");
 	$("#choice").text(choice); 
 	$("#mode").text("Your partner is still thinking...");
-	var tmpGameRef = new Firebase(game_fb + game_id);
+	var tmpGameRef = gameRef.child(game_id);
 	tmpGameRef.child(my_id).set(choice);
 
 	var buttons = document.getElementsByClassName('option');
@@ -414,12 +413,4 @@ function update_score(new_prefix) {
 		return current_value + 1;
 	});
 }
-
-function updatePlays() {
-  var countRef = new Firebase('https://nyn531.firebaseIO.com/player_count');
-  countRef.transaction(function(current_value) {
-    return current_value - 1;
-  });
-}
-
  
