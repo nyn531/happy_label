@@ -373,3 +373,12 @@ a, a:hover, a:active {text-decoration: none; color:#333;}
 .right_box h5{
 	line-height:20px;
 }
+
+.end{
+	text-align:center;
+}
+
+#result{
+	padding:50px 0;
+	font-weight:bold;
+}

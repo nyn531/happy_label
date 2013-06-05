@@ -1,4 +1,4 @@
-var gamelink = "http://stanford.edu/~nayinan/cgi-bin/esp/index.html";
+var gamelink = "http://stanford.edu/~zhengs/happy_label/index.html";
 function get_param(){
 	var prmstr = window.location.search.substr(1);
 	var prmarr = prmstr.split ("&");
