@@ -28,7 +28,7 @@ $(document).ready(function() {
 	    var $controller = $(".start_li");
 	    if (($container.has(e.target).length === 0)&&($controller.has(e.target).length === 0))
 	    {
-	        $container.hide();
+	        $container.fadeOut(100);
 	    }
 	});
 

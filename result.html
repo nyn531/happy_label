@@ -2,6 +2,15 @@
 <html>
 
 <head>
+	<meta charset="utf-8">
+	<title>HappyLabel</title> 
+	
+<!-- 	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" /> -->
+
+	<link rel="stylesheet" type="text/css" href="style_new.css" />
+	<link rel="stylesheet" type="text/css" href="intro.css" />
+
 		<script type='text/javascript' src='https://cdn.firebase.com/v0/firebase.js'></script>
 		<script src="js/jquery-1.9.1.min.js"></script>
 		<script src="js/result.js"></script>
@@ -10,8 +19,27 @@
 </head> 
 
 <body>
-	<div id="result">Great job, <span id="my_name"></span> and <span id="partner_name"></span>! you have matched <span id="matches"></span> selections. Your score is <span id="scores"></span>.</div>
+	<div class="header">
+		<div class="title wrapper">
+			<div class="logo">
+				Happy Label
+			</div>
+			<div class="operation">
+			</div>
+		</div>
+	</div>
+	<div class="wrapper">
+		<div class="row">
+			<div class="end clearfix">
 
-	<button id="play_again" > Play Again!</button>
-	<button id="check_leader" > Check Leaderboard!</button>
+				<div id="result">Great job, <span id="my_name"></span> and <span id="partner_name"></span>! you have matched <span id="matches"></span> selections. Your score is <span id="scores"></span>.</div>
+				<div class="start_li">
+					<button id="play_again" class="button btn-s"> Play Again!</button>
+					<button id="check_leader" class="button btn-s"> Top Scores!</button>
+				</div>
+				<div class="author">A game provided by Zayne Shen and Yinan Na</div>
+				<div class="thanks">Thanks for you playing!</div>
+			</div>
+		</div>
+</div>
 </body>

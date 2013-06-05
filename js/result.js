@@ -1,5 +1,6 @@
 var gamelink = "http://stanford.edu/~nayinan/cgi-bin/esp/index.html";
 var playerRef = new Firebase('https://nyn531.firebaseIO.com/player');
+
 function get_param(){
 	var prmstr = window.location.search.substr(1);
 	var prmarr = prmstr.split ("&");

@@ -302,15 +302,6 @@ a, a:hover, a:active {text-decoration: none; color:#333;}
 
 }
 
-.link{
-	border:1px solid #AAAAAA;
-	background-color: white;
-	padding:10px;
-}
-
-.link:hover{
-	border:1px solid #E71B23;
-}
 
 .ins_cell{
 	height:100px;
@@ -381,4 +372,13 @@ a, a:hover, a:active {text-decoration: none; color:#333;}
 
 .right_box h5{
 	line-height:20px;
+}
+
+.end{
+	text-align:center;
+}
+
+#result{
+	padding:50px 0;
+	font-weight:bold;
 }
