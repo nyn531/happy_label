@@ -51,10 +51,16 @@ function wait() {
 		partner_id = params['id'];
 		game_id = params['game_id'];
 		my_name = $('#start_name').val();
+		if (my_name.length == 0) {
+			my_name = "Guest" + my_id.toString();
+		}
 		partner_name = params['name'];
 		start_game();
 	} else {
 		my_name = $('#start_name').val();
+		if (my_name.length == 0) {
+			my_name = "Guest" + my_id.toString();
+		}
 		gameCountRef.transaction(function(current_game_id) {
 			if (current_game_id != 0) {
 				$("#typeName").hide();
@@ -106,9 +112,11 @@ $(document).ready(function() {
 	var params = get_param();
 	if (params['my_id']) {
 		my_id = params['my_id'];
+		/*
 		playerRef.child(my_id).child('game_num').transaction(function(current_value) {
 			return current_value+1;
 		});
+		*/
 		playerRef.child(my_id).on('value', function(snapshot) { // game starts
 			if (snapshot.val().game_id >1) {
 				game_id = snapshot.val().game_id;
@@ -234,7 +242,7 @@ function end_game(){
 	var userScoreRef = leaderboardRef.child(game_id);
   userScoreRef.setWithPriority({ name:name_pair, score:tmp_scores }, -tmp_scores);
 
-	top.window.location = resultlink+"?my_name="+my_name+"&partner_name="+partner_name+"&matches="+tmp_matches+"&scores="+tmp_scores;
+	top.window.location = resultlink+"?my_name="+my_name+"&partner_name="+partner_name+"&matches="+tmp_matches+"&scores="+tmp_scores+"&my_id="+my_id;
 }
 
 

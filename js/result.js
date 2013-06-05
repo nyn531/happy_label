@@ -1,4 +1,5 @@
 var gamelink = "http://stanford.edu/~nayinan/cgi-bin/esp/index.html";
+var playerRef = new Firebase('https://nyn531.firebaseIO.com/player');
 function get_param(){
 	var prmstr = window.location.search.substr(1);
 	var prmarr = prmstr.split ("&");
@@ -24,6 +25,11 @@ function showResult() {
 }
 
 $(document).ready(function() {
+	var params = get_param();
+	var my_id = params['my_id'];
+	playerRef.child(my_id).child('game_num').transaction(function(current_value) {
+		return current_value+1;
+	});
 	showResult();
 	$("#play_again").click(function(){
 		top.window.location = gamelink;
