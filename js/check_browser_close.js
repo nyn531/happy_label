@@ -3,10 +3,12 @@ var validNavigation = false;
 function updatePlays() {
   var delRef = new Firebase('https://nyn531.firebaseIO.com/del');
   delRef.set(window.my_id);
+  /*
   var countRef = new Firebase('https://nyn531.firebaseIO.com/player_count');
   countRef.transaction(function(current_value) {
     return current_value - 1;
   });
+  */
 }
 
 function wireUpEvents() {
