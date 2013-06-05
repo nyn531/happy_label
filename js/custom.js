@@ -1,6 +1,6 @@
 var top_prefix = "tree3/Vehicle";
 var image_num = 129;
-var secs = 20;
+var secs = 30;
 var iambusy = 0;
 var my_id = 0; 
 var partner_id = 0;
@@ -9,6 +9,7 @@ var partner_name = "My Partner";
 var game_id = 0;
 var image_id = 0;
 var myInterval = null;
+var LEADERBOARD_SIZE = 10;
 var gamelink = "http://stanford.edu/~nayinan/cgi-bin/esp/index.html";
 var resultlink = "http://stanford.edu/~nayinan/cgi-bin/esp/result.html";
 // var playerRef = new Firebase('https://nyn531.firebaseIO.com/test_player_test');
@@ -24,6 +25,7 @@ var playerCountRef = new Firebase('https://nyn531.firebaseIO.com/player_id');
 var gameRef = new Firebase('https://nyn531.firebaseIO.com/game');
 var gameCountRef = new Firebase('https://nyn531.firebaseIO.com/game_count');
 var imageRef = new Firebase('https://nyn531.firebaseIO.com/img');
+var leaderboardRef = new Firebase('https://nyn531.firebaseIO.com/leaderboard');
 var image_fb = 'https://nyn531.firebaseIO.com/img/';
 var tree_fb = 'https://nyn531.firebaseIO.com/';
 var delRef = new Firebase('https://nyn531.firebaseIO.com/del');
@@ -66,6 +68,17 @@ function wait() {
 	}
 }
 
+function load_leaderboard() {
+  var container = $("#leaderboard");
+	container.empty();
+	top10Query = leaderboardRef.startAt().limit(10);
+	top10Query.once('value', function(snapshot) {
+	  snapshot.forEach(function(childSnapshot) {
+			container.append('<tr><td id="pairs">'+childSnapshot.val().name+'</td><td id="total_score">'+childSnapshot.val().score+'</td></tr>');
+	  });
+	});
+}
+
 function start_game() {
 		//playerRef.child(partner_id).set('1'); //change player status 
 		//playerRef.child(my_id).set('1');			//change player status 
@@ -89,6 +102,7 @@ function start_game() {
 // both sides call
 $(document).ready(function() {
 	//register player to database
+	load_leaderboard();
 	var params = get_param();
 	if (params['my_id']) {
 		my_id = params['my_id'];
@@ -205,6 +219,7 @@ function end_game(){
 	alert("Game is over!");
 	var tmp_matches = $("#matches").text();
 	var tmp_scores = $("#scores").text();
+	tmp_scores = parseInt(tmp_scores, 10);
 	playerRef.child(my_id).child('game_id').set(0);	
 	//playerRef.child(my_id).child('partner_id').remove();	
 	//playerRef.child(my_id).child('partner_name').remove();	
@@ -214,6 +229,10 @@ function end_game(){
 	//$("#status").text("Thanks for playing!");
 	window.clearInterval(myInterval);
 	//top.window.location = gamelink+"?my_id="+my_id;
+	var name_pair = my_name+" and "+partner_name;
+	var userScoreRef = leaderboardRef.child(game_id);
+  userScoreRef.setWithPriority({ name:name_pair, score:tmp_scores }, -tmp_scores);
+
 	top.window.location = resultlink+"?my_name="+my_name+"&partner_name="+partner_name+"&matches="+tmp_matches+"&scores="+tmp_scores;
 }
 
