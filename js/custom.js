@@ -10,8 +10,8 @@ var game_id = 0;
 var image_id = 0;
 var myInterval = null;
 var LEADERBOARD_SIZE = 10;
-var gamelink = "http://stanford.edu/~zhengs/happy_label/index.html";
-var resultlink = "http://stanford.edu/~zhengs/happy_label/result.html";
+var gamelink = "http://stanford.edu/~nayinan/cgi-bin/esp/index.html";
+var resultlink = "http://stanford.edu/~nayinan/cgi-bin/esp/result.html";
 // var playerRef = new Firebase('https://nyn531.firebaseIO.com/test_player_test');
 // var playerIDRef = new Firebase('https://nyn531.firebaseIO.com/test_player_id');
 // var playerCountRef = new Firebase('https://nyn531.firebaseIO.com/test_player_count');
@@ -107,6 +107,9 @@ function start_game() {
 
 // both sides call
 $(document).ready(function() {
+	if (window.addEventListener) {
+　　FixPrototypeForGecko();
+	}
 	//register player to database
 	load_leaderboard();
 	var params = get_param();
@@ -328,7 +331,16 @@ function generate_options() {
 			container.empty();
 			shuffle(all);
 			for (i=0; i<all.length; i++) {
-				container.append('<li><a class="option" onclick="on_option_selected();" option='+all[i]+' href="#">'+all[i]+'</a></li>');
+				var opt=document.createElement("li");
+				opt.setAttribute('class','option');
+				opt.setAttribute('option',all[i]);
+				opt.setAttribute('href',"#");
+				opt.innerHTML = all[i];
+				opt.onclick = function(){
+					on_option_selected(event);
+				};
+				//container.append('<li><a class="option" onclick="on_option_selected('+all[i]+');" option='+all[i]+' href="#">'+all[i]+'</a></li>');
+				container.append(opt);
 			}
 		});
 	});
@@ -352,8 +364,9 @@ function shuffle ( myArray ) {
 }
 
 // response to chosen option, single side call
-function on_option_selected() {
-	var choice = event.toElement.getAttribute("option");
+function on_option_selected(event) {
+	var target = event.target || event.srcElement;
+	var choice = target.getAttribute("option");
 	$("#choice").text(choice); 
 	$("#mode").text("Your partner is still thinking...");
 	var tmpGameRef = gameRef.child(game_id);
@@ -440,5 +453,51 @@ function update_score(new_prefix) {
 	dataRef.child('score').transaction(function(current_value) {
 		return current_value + 1;
 	});
+}
+
+
+function FixPrototypeForGecko() {
+　　HTMLElement.prototype.__defineGetter__("runtimeStyle", element_prototype_get_runtimeStyle);
+　　window.constructor.prototype.__defineGetter__("event", window_prototype_get_event);
+　　Event.prototype.__defineGetter__("srcElement", event_prototype_get_srcElement);
+　　Event.prototype.__defineGetter__("fromElement", element_prototype_get_fromElement);
+　　Event.prototype.__defineGetter__("toElement", element_prototype_get_toElement);
+}
+function element_prototype_get_runtimeStyle() {
+　　return this.style;
+}
+function window_prototype_get_event() {
+　　return SearchEvent();
+}
+function event_prototype_get_srcElement() {
+　　return this.target;
+}
+function element_prototype_get_fromElement() {
+　　var node;
+　　if (this.type == "mouseover") node = this.relatedTarget;
+　　else if (this.type == "mouseout") node = this.target;
+　　if (!node) return;
+　　while (node.nodeType != 1) node = node.parentNode;
+　　return node;
+}
+function element_prototype_get_toElement() {
+　　var node;
+　　if (this.type == "mouseout") node = this.relatedTarget;
+　　else if (this.type == "mouseover") node = this.target;
+　　if (!node) return;
+　　while (node.nodeType != 1) node = node.parentNode;
+　　return node;
+}
+function SearchEvent() {
+　　if (document.all) return window.event;
+　　func = SearchEvent.caller;
+　　while (func != null) {
+　　　　var arg0 = func.arguments[0];
+　　　　if (arg0 instanceof Event) {
+　　　　　　return arg0;
+　　　　}
+　　　　func = func.caller;
+　　}
+　　return null;
 }
  

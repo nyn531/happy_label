@@ -68,5 +68,9 @@ function wireUpEvents() {
  
 // Wire up the events as soon as the DOM tree is ready
 $(document).ready(function() {
-  wireUpEvents();
+  if(navigator.userAgent.toLowerCase().indexOf('firefox') <= -1)
+  {
+    alert("wire up!");
+    wireUpEvents();
+  }
 });
